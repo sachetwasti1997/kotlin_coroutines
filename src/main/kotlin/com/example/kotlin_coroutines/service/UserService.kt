@@ -16,18 +16,18 @@ class UserService(
         return userRepository.saveUser(user)
     }
 
-    suspend fun findById(request: SearchRequest): Flow<User> {
+    suspend fun find(request: SearchRequest): Flow<User> {
         val query = Query().addCriteria(Criteria().andOperator(createQuery(searchRequest = request)))
         return userRepository.find(query)
     }
 
     fun createQuery(searchRequest: SearchRequest): List<Criteria>{
         val criteria = mutableListOf<Criteria>()
-        if (searchRequest.userId.isNotEmpty()){
+        if (searchRequest.userId?.isNotEmpty() == true){
             criteria.add(Criteria.where("userId").`is`(searchRequest.userId))
         }
-        if(searchRequest.userName.isNotEmpty()){
-            criteria.add(Criteria.where("login").`is`(searchRequest.userName))
+        else if(searchRequest.userName?.isNotEmpty() == true){
+            criteria.add(Criteria.where("userName").`is`(searchRequest.userName))
         }
         return criteria
     }
